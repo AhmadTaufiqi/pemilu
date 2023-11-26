@@ -16,18 +16,20 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Nama</label>
-                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Nama">
+                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Nama" name="nama">
                                         </div>
                                     </div>
 
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Username</label>
-                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Username">
+                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Username" name="username">
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary rounded-3 mt-3" type="submit">Cari</button>
+                                <input type="submit" class="btn btn-primary rounded-3 me-2" name="cari_submit" value="Cari">
+                                <button class="btn btn-secondary rounded-3" type="reset">Reset</button>
+                                <!-- <button class="btn btn-primary rounded-3 mt-3" type="submit">Cari</button> -->
                             </form>
                         </div>
                     </div>
@@ -55,9 +57,9 @@
                                     <thead>
                                         <tr>
                                             <th><button class="table-sort" data-sort="sort-nama">Nama</button></th>
-                                            <th><button class="table-sort" data-sort="sort-username">Username</button></th>
-                                            <th>Password</th>
-                                            <th></th>
+                                            <th width="20%"><button class="table-sort" data-sort="sort-username">Username</button></th>
+                                            <th width="20%">Password</th>
+                                            <th width="10%"></th>
 
                                         </tr>
                                     </thead>

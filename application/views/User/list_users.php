@@ -17,18 +17,20 @@
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Nama</label>
-                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Nama">
+                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Nama" name="nama">
                                         </div>
                                     </div>
 
                                     <div class="col-sm-6 col-md-6">
                                         <div class="mb-3">
                                             <label class="form-label">Username</label>
-                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Username">
+                                            <input type="text" class="form-control rounded-3" placeholder="Masukkan Username" name="username">
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary rounded-3 mt-3" type="submit">Cari</button>
+                                <input type="submit" class="btn btn-primary rounded-3 me-2" name="cari_submit" value="Cari">
+                                <button class="btn btn-secondary rounded-3" type="reset">Reset</button>
+                                <!-- <button class="btn btn-primary rounded-3 mt-3" type="submit">Cari</button> -->
                             </form>
                         </div>
                     </div>
@@ -52,11 +54,8 @@
                                 <table class="table table-striped mb-5" id="datatable1">
                                     <thead>
                                         <tr>
-                                            <th><button class="table-sort" data-sort="sort-nama">Nama</button></th>
+                                            <th width="50%"><button class="table-sort" data-sort="sort-nama">Nama</button></th>
                                             <th><button class="table-sort" data-sort="sort-username">Username</button></th>
-                                            <th>Password</th>
-                                            <th></th>
-
                                         </tr>
                                     </thead>
                                     <tbody class="table-body">
@@ -64,10 +63,6 @@
                                             <tr>
                                                 <td class="sort-nama"><?= $u->nama ?></td>
                                                 <td class="sort-username"><?= $u->username ?></td>
-                                                <td>*****</td>
-                                                <td>
-                                                    <a href="<?= base_url('user/edituser?user_id=') . $u->id ?>" class="nav-link text-primary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
-                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>

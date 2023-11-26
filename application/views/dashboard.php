@@ -59,75 +59,29 @@
             <div class="row mt-4">
                 <div class="col-md">
                     <div class="card">
-                        <div class="card-status-top bg-primary">
-                            <div class="card-body">
-                                <div id="table-default" class="table-responsive">
-                                    <table class="table mb-5">
-                                        <thead>
-                                            <tr>
-                                                <th><button class="table-sort" data-sort="sort-name">Username</button></th>
-                                                <th><button class="table-sort" data-sort="sort-city">Name</button></th>
-                                                <th><button class="table-sort" data-sort="sort-type">Jumlah</button></th>
+                        <div class="card-body">
+                            <div id="table-default" class="table-responsive">
+                                <table class="table mb-5" id="datatable1">
+                                    <thead>
+                                        <tr>
+                                            <th><button class="table-sort" data-sort="sort-username">Username</button></th>
+                                            <th><button class="table-sort" data-sort="sort-name">Name</button></th>
+                                            <th width="10%"><button class="table-sort" data-sort="sort-total">Jumlah</button></th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody class="table-body">
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-body">
+                                        <?php foreach ($data_tbl as $r) : ?>
                                             <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
+                                                <td class="sort-username"><?= $r->username ?></td>
+                                                <td class="sort-name"><?= $r->nama ?></td>
+                                                <td class="sort-total"><?= $r->total ?></td>
                                             </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="sort-name">Steel Vengeance</td>
-                                                <td class="sort-city">Steel Vengeance</td>
-                                                <td class="sort-type">500</td>
-                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
 
-                                        </tbody>
+                                </table>
 
-                                    </table>
-
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -166,7 +120,7 @@
         const config = {
             type: 'line',
             data: data,
-            height:250
+            height: 250
         };
         const chart_container = document.getElementById('chart_container');
         new Chart(chart_container, config)

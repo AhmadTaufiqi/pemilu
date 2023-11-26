@@ -15,9 +15,16 @@ class User extends CI_Controller
     public function index()
     {
         $user_role = $this->session->userdata('role_id');
-        $data['user'] = $this->db->get('user')->result_object();
+        $input = $this->input->post();
+
+        if (isset($input['cari_submit'])) {
+            $this->db->like('nama', $input['nama']);
+            $this->db->like('username', $input['username']);
+        }
+        $data['user'] = $this->db->select('*')->from('user')
+            ->get()->result_object();
+
         $data['title'] = "Home";
-        // echo json_encode($data['user']);
         if ($user_role == 1) {
             $this->M_app->template($data, 'admin/list_users');
         } else {
@@ -68,7 +75,7 @@ class User extends CI_Controller
                 'username' => $input['username'],
                 'updated_at' => $this->M_app->date()
             );
-            if($user_id != $this->session->userdata('id_akun')){
+            if ($user_id != $this->session->userdata('id_akun')) {
                 $update_data['role_id'] = 2;
             }
             if (trim($input['password']) != '') {

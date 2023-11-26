@@ -90,7 +90,7 @@
                                     <?php if ($user_role == 2) : ?>
                                         <a class="btn btn-primary rounded-3" href="<?= base_url('relawan/addRelawan'); ?>">Tambah Relawan</a>
                                     <?php endif; ?>
-                                    <a href="http://localhost/sipsurakarta/kontrak/finals/exportExcel/finals" class="btn btn-light btn-excel rounded-15">
+                                    <a href="<?= base_url('Relawan/exportExcel')?>" class="btn btn-light btn-excel rounded-15">
                                         <i class="fas fa-file-excel" style="font-size:20px;color:#2e7943;"></i>
                                         <span class="text-success">&nbsp;&nbsp;Export Excel</span>
                                     </a>

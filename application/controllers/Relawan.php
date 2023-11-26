@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 class Relawan extends CI_Controller
 {
     public function __construct()
@@ -95,16 +100,83 @@ class Relawan extends CI_Controller
         for ($i = 0; $i < 5; $i++) {
             $date = date('Y-m-d', strtotime($date . "+1 day"));
             $qdate = $this->db->select('*')
-            ->from('relawan')
-            ->where('created_at', $date)
-            ->order_by('created_at')
-            ->get()->result_object();
+                ->from('relawan')
+                ->where('created_at', $date)
+                ->order_by('created_at')
+                ->get()->result_object();
             $label[$i] = $date;
             $total[$i] = count($qdate);
         }
         $data['label'] = $label;
         $data['total'] = $total;
-        // $data['chart']['days'] = json_encode(['senin', 'selasa']);
+
+        $data['data_tbl'] = $this->db->select('u.*,count(r.created_by) as total')
+            ->from('user u')
+            ->join('relawan r', 'r.created_by=u.id')
+            ->where('u.role_id', '2')
+            ->group_by('r.created_by')
+            ->get()->result_object();
+
         $this->M_app->template($data, 'dashboard');
+    }
+
+    public function exportExcel()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', "NIK");
+        $sheet->setCellValue('B1', "NAMA");
+        $sheet->setCellValue('C1', "GENDER");
+        $sheet->setCellValue('D1', "TELEPON");
+        $sheet->setCellValue('E1', "PROVINSI");
+        $sheet->setCellValue('F1', "KABUPATEN");
+        $sheet->setCellValue('G1', "TPS");
+        $sheet->setCellValue('H1', "INPUTTER");
+
+        $data = $this->db->select('r.*,u.nama inputter')
+            ->from('relawan r')
+            ->join('user u', 'r.created_by=u.id', 'inner')
+            ->get()->result();
+
+        $numrow = 2;
+        foreach ($data as $d) {
+            if($d->gender == 'L'){
+                $gender = 'Laki-Laki';
+            }else{
+                $gender = 'Perempuan';
+            }
+
+            $prov = $this->db->get_where('provinces',['id'=>$d->provinsi])->row_array();
+            $kab = $this->db->get_where('regencies',['id'=>$d->kabupaten])->row_array();
+
+            $provinsi = '';
+            $kabupaten = '';
+            if($prov){
+                $provinsi = $prov['name'];
+            }
+            if($kab){
+                $kabupaten = $kab['name'];
+            }
+            $sheet->setCellValue('A' . $numrow, $d->nik);
+            $sheet->setCellValue('B' . $numrow, $d->nama);
+            $sheet->setCellValue('C' . $numrow, $gender);
+            $sheet->setCellValue('D' . $numrow, $d->telepon);
+            $sheet->setCellValue('E' . $numrow, $provinsi);
+            $sheet->setCellValue('F' . $numrow, $kabupaten);
+            $sheet->setCellValue('G' . $numrow, $d->tps);
+            $sheet->setCellValue('H' . $numrow, $d->inputter);
+
+            $numrow++;
+        }
+
+        $sheet->setTitle("Data Kontrak");
+        // Proses file excel
+        header('Content-Type: application/ms-excel');
+        header('Content-Disposition: attachment; filename="Data Kontrak.xlsx"'); // Set nama file excel nya
+        header('Cache-Control: max-age=0');
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
     }
 }
