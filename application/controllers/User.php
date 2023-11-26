@@ -3,83 +3,98 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class User extends CI_Controller
 {
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('M_app');
+        if (empty($this->session->userdata('id_akun'))) {
+            redirect(base_url('auth'));
+        }
+    }
+
     public function index()
     {
-
-        $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
+        $user_role = $this->session->userdata('role_id');
+        $data['user'] = $this->db->get('user')->result_object();
         $data['title'] = "Home";
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('templates/menubar', $data);
-        $this->load->view('user/index', $data);
-        $this->load->view('templates/footer', $data);
+        // echo json_encode($data['user']);
+        if ($user_role == 1) {
+            $this->M_app->template($data, 'admin/list_users');
+        } else {
+            $this->M_app->template($data, 'user/list_users');
+        }
     }
 
-    public function useracc()
+    public function addUser()
     {
-
-        $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['title'] = "User";
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('templates/menubar', $data);
-        $this->load->view('user/user-acc', $data);
-        $this->load->view('templates/footer', $data);
-    }
-
-    public function relawan()
-    {
-
-        $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['title'] = "Relawan";
-
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('templates/menubar', $data);
-        $this->load->view('user/relawan', $data);
-        $this->load->view('templates/footer', $data);
-    }
-
-    public function addRelawan()
-    {
-        $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['title'] = "Tambah Data Relawan";
-
-        if($this->input->post()){
-            $input = $this->input->post();
-            $data_save = array(
-                'nik' => $input['nik'],
+        $user_role = $this->session->userdata('role_id');
+        if ($user_role == 2) {
+            redirect(base_url() . 'user');
+        }
+        $input = $this->input->post();
+        if ($input) {
+            $insert_data = array(
                 'nama' => $input['nama'],
-                'gender' => $input['gender'],
-                'propinsi' => $input['propinsi'],
-                'kabupaten' => $input['kabupaten'],
-                'kota' => $input['kota'],
-                'kecamatan' => $input['kecamatan'],
-                'kelurahan' => $input['kelurahan'],
-                'rw' => $input['rw'],
-                'rw' => $input['rw'],
-                'tps' => $input['tps'],
-                'inputter' => $input['inputter'],
-                'created_at' => now()
+                'username' => $input['username'],
+                'role_id' => 2,
+                'password' => $input['password'],
+                'created_at' => $this->M_app->date()
             );
-            if($input['relawan_id']){
-                $this->db->update('relawan',['relawan_id' => $input['relawan_id']]);
-            }else{
-                $this->db->insert('relawan',$data);
-            }
-
+            $this->db->insert('user', $insert_data);
+            $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
+            echo json_encode($input);
         }
 
-        $this->load->view('templates/header', $data);
-        $this->load->view('templates/topbar', $data);
-        $this->load->view('templates/menubar', $data);
-        $this->load->view('user/add-relawan', $data);
-        $this->load->view('templates/footer', $data);
+        $data['title'] = "Tambah User";
+        $data['action'] = "Tambah";
+        $data['form'] = "user/adduser";
+
+        $this->M_app->template($data, 'admin/form_user');
+    }
+    public function editUser()
+    {
+        $user_role = $this->session->userdata('role_id');
+        if ($user_role == 2) {
+            redirect(base_url() . 'user');
+        }
+        $user_id = $this->input->get('user_id');
+        $data['user'] = $this->db->get_where('user', ['id' => $user_id])->row_object();
+
+        $input = $this->input->post();
+        if ($input) {
+            $user_id = $input['user_id'];
+            $update_data = array(
+                'nama' => $input['nama'],
+                'username' => $input['username'],
+                'updated_at' => $this->M_app->date()
+            );
+            if($user_id != $this->session->userdata('id_akun')){
+                $update_data['role_id'] = 2;
+            }
+            if (trim($input['password']) != '') {
+                $update_data['password'] = $input['password'];
+            }
+            $this->db->update('user', $update_data, ['id' => $user_id]);
+            $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
+            redirect(base_url() . 'user');
+        }
+
+        $data['title'] = "Tambah User";
+        $data['action'] = "Edit";
+        $data['form'] = "user/edituser";
+
+        $this->M_app->template($data, 'admin/form_user');
     }
 
-    public function ExportRelawan(){
-
+    function CheckUsername()
+    {
+        $username = $this->input->post('username');
+        $id = $this->input->post('id');
+        $result = $this->db->select('*')
+            ->from('user')
+            ->where('username', $username)
+            ->where('id <>', $id)
+            ->get()->result_object();
+        echo count($result);
     }
 }
