@@ -26,7 +26,6 @@ class Relawan extends CI_Controller
         $filter = $this->input->post('submit_filter');
 
 
-        $this->db->trans_start();
         if ($filter) {
             $input = $this->input->post();
             $this->db->like('r.nik', $input['filter_nik']);
@@ -35,7 +34,7 @@ class Relawan extends CI_Controller
                 $this->db->where('r.created_by', $input['filter_inputter']);
             }
             if ($input['filter_kelurahan'] != '') {
-                $this->db->or_where('r.kelurahan', $input['filter_kelurahan']);
+                $this->db->where('r.kelurahan', $input['filter_kelurahan']);
             }
         }
         $data['qrelawan'] = $this->db->select('r.*,r.created_by,u.nama as inputter,p.name as provinsi, k.name as kabupaten, d.name as kecamatan, v.name as kelurahan')
@@ -47,7 +46,6 @@ class Relawan extends CI_Controller
             ->join('villages v', 'r.kelurahan=v.id', 'inner')
             ->get()->result_object();
         $this->db->trans_complete();
-        // echo json_encode($data['qrelawan']);
         $this->M_app->template($data, 'relawan/relawan');
     }
     public function addRelawan()
@@ -63,7 +61,7 @@ class Relawan extends CI_Controller
                 'provinsi' => $input['provinsi'],
                 'kabupaten' => $input['kabupaten'],
                 'kecamatan' => $input['kecamatan'],
-                'desa' => $input['desa'],
+                'kelurahan' => $input['desa'],
                 'rt' => $input['rt'],
                 'rw' => $input['rw'],
                 'tps' => $input['tps'],
@@ -71,11 +69,12 @@ class Relawan extends CI_Controller
                 'created_at' => $this->M_app->date(),
             );
             $this->db->insert('relawan', $insert_data);
-            $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
-            echo json_encode($input);
+            $this->session->set_flashdata('message', 'success');
+            redirect(base_url() . 'relawan');
         }
 
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
+        $data['row_relawan'] = [];
         $data['action'] = "Tambah Data Relawan";
         $data['title'] = "Home";
 
@@ -85,27 +84,35 @@ class Relawan extends CI_Controller
     {
         $input = $this->input->post();
         if ($input) {
+            $wil = $this->db->select('p.id prov,r.id kab,d.id cam')
+                ->from('villages v')
+                ->join('districts d', 'd.id=v.district_id')
+                ->join('regencies r', 'r.id=d.regency_id')
+                ->join('provinces p', 'p.id=r.province_id')
+                ->where('v.id', $input['desa'])
+                ->get()->row_object();
+
             $update_data = array(
                 'nik' => $input['nik'],
                 'nama' => $input['nama'],
                 'telepon' => $input['telepon'],
                 'gender' => $input['gender'],
-                'provinsi' => $input['provinsi'],
-                'kabupaten' => $input['kabupaten'],
-                'kecamatan' => $input['kecamatan'],
-                'desa' => $input['desa'],
+                'provinsi' => $wil->prov,
+                'kabupaten' => $wil->kab,
+                'kecamatan' => $wil->cam,
+                'kelurahan' => $input['desa'],
                 'rt' => $input['rt'],
                 'rw' => $input['rw'],
                 'tps' => $input['tps'],
-                'updated_at' => time(now()),
+                'updated_at' => $this->M_app->date(),
             );
             $this->db->update('relawan', ['id' => $input['relawan_id']], $update_data);
             $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
-            echo json_encode($input);
+            redirect(base_url() . 'relawan');
         }
 
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['row_relawan'] = $this->db->get_where('relawan', ['id' => $this->input->get('id')])->row_array();
+        $data['row_relawan'] = $this->db->get_where('relawan', ['id' => $this->input->get('id')])->row_object();
         $data['action'] = "Edit Data Relawan";
         $data['title'] = "Home";
 
@@ -125,6 +132,13 @@ class Relawan extends CI_Controller
             ->where('r.id', $id)
             ->get()->row_object();
         echo json_encode($data);
+    }
+
+    public function nikCheck()
+    {
+        $nik = $this->input->post('nik');
+        $data = $this->db->get_where('relawan', ['nik' => $nik])->result_array();
+        echo json_encode(count($data));
     }
 
     public function dashboard()
@@ -169,8 +183,10 @@ class Relawan extends CI_Controller
         $sheet->setCellValue('B1', "NAMA");
         $sheet->setCellValue('C1', "GENDER");
         $sheet->setCellValue('D1', "TELEPON");
-        $sheet->setCellValue('E1', "PROVINSI");
+        $sheet->setCellValue('F1', "KELURAHAN");
+        $sheet->setCellValue('F1', "KECAMATAN");
         $sheet->setCellValue('F1', "KABUPATEN");
+        $sheet->setCellValue('E1', "PROVINSI");
         $sheet->setCellValue('G1', "TPS");
         $sheet->setCellValue('H1', "INPUTTER");
 
@@ -189,21 +205,33 @@ class Relawan extends CI_Controller
 
             $prov = $this->db->get_where('provinces', ['id' => $d->provinsi])->row_array();
             $kab = $this->db->get_where('regencies', ['id' => $d->kabupaten])->row_array();
+            $cam = $this->db->get_where('regencies', ['id' => $d->kecamatan])->row_array();
+            $desa = $this->db->get_where('regencies', ['id' => $d->kelurahan])->row_array();
 
             $provinsi = '';
             $kabupaten = '';
+            $kecamatan = '';
+            $kelurahan = '';
             if ($prov) {
                 $provinsi = $prov['name'];
             }
             if ($kab) {
                 $kabupaten = $kab['name'];
             }
+            if ($cam) {
+                $kecamatan = $cam['name'];
+            }
+            if ($desa) {
+                $kelurahan = $desa['name'];
+            }
             $sheet->setCellValue('A' . $numrow, $d->nik);
             $sheet->setCellValue('B' . $numrow, $d->nama);
             $sheet->setCellValue('C' . $numrow, $gender);
             $sheet->setCellValue('D' . $numrow, $d->telepon);
-            $sheet->setCellValue('E' . $numrow, $provinsi);
+            $sheet->setCellValue('F' . $numrow, $kelurahan);
+            $sheet->setCellValue('F' . $numrow, $kecamatan);
             $sheet->setCellValue('F' . $numrow, $kabupaten);
+            $sheet->setCellValue('E' . $numrow, $provinsi);
             $sheet->setCellValue('G' . $numrow, $d->tps);
             $sheet->setCellValue('H' . $numrow, $d->inputter);
 
@@ -228,29 +256,31 @@ class Relawan extends CI_Controller
         INNER JOIN regencies r ON p.id=r.province_id
         INNER JOIN districts d ON r.id=d.regency_id
         INNER JOIN villages v ON d.id=v.district_id
-        WHERE r.id IN (3203)")->result_object();
-        foreach ($data as $d => $index) {
-            $index = $index + 2;
-            $username = 'korkel_' . strtolower($d->kelurahan) . '_' . $d->cam;
+        WHERE r.id IN (3271)")->result_object();
+        $index = 2;
+        foreach ($data as $d) {
+            $index++;
+            $username = 'korkel_' . strtolower($d->kelurahan);
             $password = strtolower($d->kelurahan);
-            // echo $username;
-            // echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-            // echo $password;
+            echo $username;
+            echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+            echo $password;
             echo '<br>';
-            echo $index;
-            // $this->db->where('username', $username);
-            // $data_check = $this->db->get('user')->result_array();
+            $this->db->where('username', $username);
+            $data_check = $this->db->get('user')->result_array();
 
-            // echo count($data_check);
-            // $data_insert = [
-            //     'id' => $index,
-            //     'nama' => 'INPUTTER',
-            //     'username' => $username,
-            //     'password' => md5($password),
-            //     'role_id' => 2,
-            //     'created_at' => $this->M_app->date()
-            // ];
-            // $this->db->insert('user', $data_insert);
+            echo count($data_check);
+            if (count($data_check) == 0) {
+                $data_insert = [
+                    'id' => $index,
+                    'nama' => 'INPUTTER',
+                    'username' => $username,
+                    'password' => md5($password),
+                    'role_id' => 2,
+                    'created_at' => $this->M_app->date()
+                ];
+                $this->db->insert('user', $data_insert);
+            }
         }
         echo count($data);
     }

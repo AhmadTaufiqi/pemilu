@@ -12,7 +12,6 @@
                                     <span class="text-black"> Filters</span>
                                 </button>
                             </h2>
-                            <?= $this->session->flashdata('msg') ?>
 
                             <div id="pencarian" class="accordion-collapse collapse show" data-bs-parent="#accordion-example">
                                 <div class="accordion-body pt-0">
@@ -131,8 +130,7 @@
                                                 <?php if ($user_role == 2) : ?>
                                                     <td class="text-end">
                                                         <a href="<?= base_url('relawan/editRelawan?id=') . $r->id ?>" class="px-2 divider_right"><i class="fas fa-edit"></i></a>
-                                                        <a role="button" class="text-primary" 
-                                                        data-bs-toggle="modal" data-bs-target="#detail_relawan" onclick="showDetailRelawan(<?= $r->id ?>)"><i class="fas fa-eye"></i></a>
+                                                        <a role="button" class="text-primary" data-bs-toggle="modal" data-bs-target="#detail_relawan" onclick="showDetailRelawan(<?= $r->id ?>)"><i class="fas fa-eye"></i></a>
                                                     </td>
                                                 <?php endif; ?>
                                             </tr>
@@ -297,6 +295,10 @@
 
         $('#select_kel').on('change', function() {
             const kel_id = $(this).val()
+            setFormWil(kel_id)
+        })
+
+        function setFormWil(kel_id) {
             $.post({
                 url: base_url + 'resWilayah/getKelurahan',
                 method: "post",
@@ -313,7 +315,7 @@
 
                 }
             })
-        })
+        }
 
         function showDetailRelawan(id) {
             console.log(id)

@@ -23,7 +23,6 @@
                     <span class="iconify" data-icon="icon-park-solid:check-one" style="color: #37d750;" data-width="62.5"></span>
                     <i class="fe fe-check-circle fe-24 text-success" style="font-size:112px;"></i>
                     <h3 class="text-center mt-3" style="color: #37d750;">Success Change Data</h3>
-                    <p class="text-center"><?= $this->session->flashdata('message') ?? 'Berhasil Menyimpan Data' ?></p>
                 </div>
             </div>
         </div>

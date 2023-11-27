@@ -22,9 +22,10 @@
                         <div class="card-status-top bg-primary"></div>
                         <div class="card-body">
 
-                            <form action="<?= base_url() ?>relawan/addrelawan" method="POST">
+                            <form action="" method="POST">
                                 <div class="row row-cards">
                                     <div class="col-md">
+                                        <input type="text" name="relawan_id" id="relawan_id">
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">NIK</label>
                                             <div class="col">
@@ -65,7 +66,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">Kecamatan</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="kecamatan" id="select_cam" required>
+                                                <select class="form-select rounded-3" name="kecamatan" id="select_cam" required disabled>
                                                     <option value="">Pilih Kecamatan</option>
                                                 </select>
                                             </div>
@@ -74,7 +75,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">Kabupaten/Kota</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="kabupaten" id="select_kab" required>
+                                                <select class="form-select rounded-3" name="kabupaten" id="select_kab" required disabled>
                                                     <option value="">Pilih Kabupaten/Kota</option>
                                                 </select>
                                             </div>
@@ -82,7 +83,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">Provinsi</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="provinsi" id="select_prov" required>
+                                                <select class="form-select rounded-3" name="provinsi" id="select_prov" required disabled>
                                                     <option value="">Pilih Provinsi</option>
                                                 </select>
                                             </div>
@@ -122,13 +123,21 @@
     </div>
     <?php if ($row_relawan) : ?>
         <script>
-            const row_relawan = JSON.parse('<?= json_encode($row_relawan) ?>')
-            console.log(row_relawan)
-            $('#nik').val(row_relawan.nik)
-            $('#nama').val(row_relawan.nama)
-            $('#telepon').val(row_relawan.telepon)
-            $('#gender').val(row_relawan.gender)
-            $('#nik').val(row_relawan.nik)
+            $(function() {
+                const row_relawan = JSON.parse('<?= json_encode($row_relawan) ?>')
+                console.log(row_relawan)
+                $('#relawan_id').val(row_relawan.id)
+                $('#nik').val(row_relawan.nik)
+                $('#nama').val(row_relawan.nama)
+                $('#telepon').val(row_relawan.telepon)
+                $('#gender').val(row_relawan.gender)
+                $('#nik').val(row_relawan.nik)
+                $('#rt').val(row_relawan.rt)
+                $('#rw').val(row_relawan.rw)
+                $('#tps').val(row_relawan.tps)
+                $('#select_kel').val(row_relawan.kelurahan)
+                setFormWil(row_relawan.kelurahan)
+            })
         </script>
     <?php endif; ?>
     <script>
@@ -150,6 +159,29 @@
 
         $('#select_kel').on('change', function() {
             const kel_id = $(this).val()
+            setFormWil(kel_id)
+        })
+        $('#nik').on('keyup', function() {
+            const nik = $(this).val()
+            $.post({
+                url: base_url + "relawan/nikCheck",
+                method: "post",
+                data: {
+                    nik
+                },
+                dataType: "JSON",
+                success: function(data) {
+                    console.log(data)
+                    if (data > 0) {
+                        $('#nik')[0].setCustomValidity("nik sudah tersedia!");
+                    } else {
+                        $('#nik')[0].setCustomValidity("");
+                    }
+                }
+            })
+        })
+
+        function setFormWil(kel_id) {
             $.post({
                 url: base_url + 'resWilayah/getKelurahan',
                 method: "post",
@@ -166,5 +198,5 @@
 
                 }
             })
-        })
+        }
     </script>

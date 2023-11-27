@@ -70,8 +70,8 @@
                                                 <td class="sort-username"><?= $u->username ?></td>
                                                 <td>*****</td>
                                                 <td class="text-center">
-                                                    <a href="<?= base_url('user/edituser?user_id=') . $u->id ?>" class="text-primary px-2 divider_right"><i class="fas fa-edit"></i></a>
-                                                    <a href="<?= base_url('user/deldata?id=') . $u->id ?>" class="text-danger px-2"><i class="fas fa-trash"></i></a>
+                                                    <a href="<?= base_url('user/edituser?user_id=') . $u->id ?>" class="text-primary px-2"><i class="fas fa-edit"></i></a>
+                                                    <!-- <a href="<?= base_url('user/deldata?id=') . $u->id ?>" class="text-danger px-2"><i class="fas fa-trash"></i></a> -->
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

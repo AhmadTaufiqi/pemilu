@@ -47,7 +47,7 @@ class Login extends CI_Controller
         if ($user) {
             //Cek password
             // if (password_verify($password, $user['password'])) {
-            if ($password == $user['password']) {
+            if (md5($password) == $user['password']) {
 
                 $data = [
                     'username' => $user['username'],
@@ -73,62 +73,6 @@ class Login extends CI_Controller
         }
     }
 
-
-
-    public function register()
-    {
-        $this->form_validation->set_rules(
-            'name',
-            'Name',
-            'required|trim',
-            ['required' => 'Nama Lengkap tidak boleh kosong']
-        );
-        $this->form_validation->set_rules(
-            'username',
-            'Username',
-            'required|trim|is_unique[user.username]',
-            [
-                'required' => 'Username tidak boleh kosong',
-                'is_unique' => 'Username sudah terdaftar'
-
-            ]
-        );
-        $this->form_validation->set_rules(
-            'password',
-            'Password',
-            'required|trim|min_length[5]|matches[password1]',
-            [
-                'required' => 'Password tidak boleh kosong',
-                'min_length' => 'Password harus berisi minimal 5 karakter',
-                'matches' => 'Password tidak sama'
-            ]
-        );
-        $this->form_validation->set_rules(
-            'password1',
-            'Password',
-            'required|trim|matches[password]',
-            [
-                'required' => 'Konfirmasi password tidak boleh kosong',
-                'matches' => 'Password tidak sama'
-            ]
-        );
-        if ($this->form_validation->run() == FALSE) {
-            $this->load->view('login/register');
-        } else {
-            $data = [
-                "name" => htmlspecialchars($this->input->post('name', true)),
-                "username" => htmlspecialchars($this->input->post('username', true)),
-                "password" => password_hash($this->input->post('password', true), PASSWORD_DEFAULT),
-                "role_id" => 2,
-                "date_created" => time()
-            ];
-
-            $this->db->insert('user', $data);
-            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
-            Akun Berhasil Dibuat, Silahkan Login</div>');
-            redirect('login');
-        }
-    }
 
     public function logout()
     {
