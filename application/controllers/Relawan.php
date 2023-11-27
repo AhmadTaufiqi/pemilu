@@ -12,6 +12,7 @@ class Relawan extends CI_Controller
     {
         parent::__construct();
         $this->load->model('M_app');
+        $this->load->model('M_relawan');
         if (empty($this->session->userdata('id_akun'))) {
             redirect(base_url('login'));
         }
@@ -23,29 +24,8 @@ class Relawan extends CI_Controller
         $data['title'] = "Home";
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['inputter'] = $this->db->get_where('user', ['role_id' => 2])->result_object();
-        $filter = $this->input->post('submit_filter');
 
-
-        if ($filter) {
-            $input = $this->input->post();
-            $this->db->like('r.nik', $input['filter_nik']);
-            $this->db->like('r.nama', $input['filter_nama']);
-            if ($input['filter_inputter'] != '') {
-                $this->db->where('r.created_by', $input['filter_inputter']);
-            }
-            if ($input['filter_kelurahan'] != '') {
-                $this->db->where('r.kelurahan', $input['filter_kelurahan']);
-            }
-        }
-        $data['qrelawan'] = $this->db->select('r.*,r.created_by,u.nama as inputter,p.name as provinsi, k.name as kabupaten, d.name as kecamatan, v.name as kelurahan')
-            ->from('relawan r')
-            ->join('user u', 'r.created_by=u.id', 'inner')
-            ->join('provinces p', 'r.provinsi=p.id', 'inner')
-            ->join('regencies k', 'r.kabupaten=k.id', 'inner')
-            ->join('districts d', 'r.kecamatan=d.id', 'inner')
-            ->join('villages v', 'r.kelurahan=v.id', 'inner')
-            ->get()->result_object();
-        $this->db->trans_complete();
+        $data['qrelawan'] = $this->M_relawan->getDataRelawan();
         $this->M_app->template($data, 'relawan/relawan');
     }
     public function addRelawan()
@@ -107,7 +87,7 @@ class Relawan extends CI_Controller
                 'updated_at' => $this->M_app->date(),
             );
             $this->db->set($update_data);
-            $this->db->where('id' , $input['relawan_id']);
+            $this->db->where('id', $input['relawan_id']);
             $this->db->update('relawan');
             $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
             redirect(base_url() . 'relawan');
@@ -254,35 +234,39 @@ class Relawan extends CI_Controller
     {
         // 3203 id kab cianjur
         // 3271 id kota bogor
-        $data = $this->db->query("SELECT v.name as kelurahan,p.name as prov,r.name as kab,d.name as cam FROM provinces p 
-        INNER JOIN regencies r ON p.id=r.province_id
-        INNER JOIN districts d ON r.id=d.regency_id
-        INNER JOIN villages v ON d.id=v.district_id
-        WHERE r.id IN (3271)")->result_object();
-        $index = 2;
-        foreach ($data as $d) {
-            $index++;
-            $username = 'korkel_' . strtolower($d->kelurahan);
-            $password = strtolower($d->kelurahan);
-            echo $username;
-            echo '&nbsp;&nbsp;&nbsp;&nbsp;';
-            echo $password;
-            echo '<br>';
-            $this->db->where('username', $username);
-            $data_check = $this->db->get('user')->result_array();
-
-            echo count($data_check);
-            if (count($data_check) == 0) {
-                $data_insert = [
-                    'id' => $index,
-                    'nama' => 'INPUTTER',
-                    'username' => $username,
-                    'password' => md5($password),
-                    'role_id' => 2,
-                    'created_at' => $this->M_app->date()
-                ];
-                $this->db->insert('user', $data_insert);
-            }
+        // $data = $this->db->query("SELECT v.name as kelurahan,p.name as prov,r.name as kab,d.name as cam FROM provinces p 
+        // INNER JOIN regencies r ON p.id=r.province_id
+        // INNER JOIN districts d ON r.id=d.regency_id
+        // INNER JOIN villages v ON d.id=v.district_id
+        // WHERE r.id IN (3271)")->result_object();
+        // $index = 2;
+        // foreach ($data as $d) {
+        //     $index++;
+        //     $username = 'korkel_' . strtolower($d->kelurahan);
+        //     $password = strtolower($d->kelurahan);
+        //     echo $username;
+        //     echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+        //     echo $password;
+        //     echo '<br>';
+        //     $this->db->where('username', $username);
+        //     $data_check = $this->db->get('user')->result_array();
+        $data = array('username'=>'Tandem Bogor Utara-TS',
+        'username' => 'Tandem Bogor Utara-A',
+        'username'=>'Tandem Bogor Selatan-H',
+        'username'=>'Tandem Bogor Barat-AMS',
+        'username' =>'Tandem Tanah Sareal-BMP')
+            // echo count($data_check);
+            // if (count($data_check) == 0) {
+            //     $data_insert = [
+            //         'id' => $index,
+            //         'nama' => 'INPUTTER',
+            //         'username' => $username,
+            //         'password' => md5($password),
+            //         'role_id' => 2,
+            //         'created_at' => $this->M_app->date()
+            //     ];
+            //     $this->db->insert('user', $data_insert);
+            // }
         }
         echo count($data);
     }
