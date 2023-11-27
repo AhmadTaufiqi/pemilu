@@ -23,12 +23,31 @@ class Relawan extends CI_Controller
         $data['title'] = "Home";
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['inputter'] = $this->db->get_where('user', ['role_id' => 2])->result_object();
+        $filter = $this->input->post('submit_filter');
 
-        $data['qrelawan'] = $this->db->select('r.*,u.nama inputter')
+
+        $this->db->trans_start();
+        if ($filter) {
+            $input = $this->input->post();
+            $this->db->like('r.nik', $input['filter_nik']);
+            $this->db->like('r.nama', $input['filter_nama']);
+            if ($input['filter_inputter'] != '') {
+                $this->db->where('r.created_by', $input['filter_inputter']);
+            }
+            if ($input['filter_kelurahan'] != '') {
+                $this->db->or_where('r.kelurahan', $input['filter_kelurahan']);
+            }
+        }
+        $data['qrelawan'] = $this->db->select('r.*,r.created_by,u.nama as inputter,p.name as provinsi, k.name as kabupaten, d.name as kecamatan, v.name as kelurahan')
             ->from('relawan r')
             ->join('user u', 'r.created_by=u.id', 'inner')
+            ->join('provinces p', 'r.provinsi=p.id', 'inner')
+            ->join('regencies k', 'r.kabupaten=k.id', 'inner')
+            ->join('districts d', 'r.kecamatan=d.id', 'inner')
+            ->join('villages v', 'r.kelurahan=v.id', 'inner')
             ->get()->result_object();
-
+        $this->db->trans_complete();
+        // echo json_encode($data['qrelawan']);
         $this->M_app->template($data, 'relawan/relawan');
     }
     public function addRelawan()
@@ -91,6 +110,21 @@ class Relawan extends CI_Controller
         $data['title'] = "Home";
 
         $this->M_app->template($data, 'relawan/form_relawan');
+    }
+
+    public function detail()
+    {
+        $id = $this->input->post('id');
+        $data = $this->db->select('r.*,u.nama as inputter,p.name as provinsi, k.name as kabupaten, d.name as kecamatan, v.name as kelurahan')
+            ->from('relawan r')
+            ->join('user u', 'r.created_by=u.id', 'inner')
+            ->join('provinces p', 'r.provinsi=p.id', 'inner')
+            ->join('regencies k', 'r.kabupaten=k.id', 'inner')
+            ->join('districts d', 'r.kecamatan=d.id', 'inner')
+            ->join('villages v', 'r.kelurahan=v.id', 'inner')
+            ->where('r.id', $id)
+            ->get()->row_object();
+        echo json_encode($data);
     }
 
     public function dashboard()
@@ -184,5 +218,40 @@ class Relawan extends CI_Controller
 
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
+    }
+
+    public function createRelawanUser()
+    {
+        // 3203 id kab cianjur
+        // 3271 id kota bogor
+        $data = $this->db->query("SELECT v.name as kelurahan,p.name as prov,r.name as kab,d.name as cam FROM provinces p 
+        INNER JOIN regencies r ON p.id=r.province_id
+        INNER JOIN districts d ON r.id=d.regency_id
+        INNER JOIN villages v ON d.id=v.district_id
+        WHERE r.id IN (3203)")->result_object();
+        foreach ($data as $d => $index) {
+            $index = $index + 2;
+            $username = 'korkel_' . strtolower($d->kelurahan) . '_' . $d->cam;
+            $password = strtolower($d->kelurahan);
+            // echo $username;
+            // echo '&nbsp;&nbsp;&nbsp;&nbsp;';
+            // echo $password;
+            echo '<br>';
+            echo $index;
+            // $this->db->where('username', $username);
+            // $data_check = $this->db->get('user')->result_array();
+
+            // echo count($data_check);
+            // $data_insert = [
+            //     'id' => $index,
+            //     'nama' => 'INPUTTER',
+            //     'username' => $username,
+            //     'password' => md5($password),
+            //     'role_id' => 2,
+            //     'created_at' => $this->M_app->date()
+            // ];
+            // $this->db->insert('user', $data_insert);
+        }
+        echo count($data);
     }
 }

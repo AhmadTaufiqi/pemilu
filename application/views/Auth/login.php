@@ -39,7 +39,7 @@
             <div class="card card-md">
                 <div class="card-body">
                     <h2 class="h2 text-center mb-4">Silahkan Login</h2>
-                    <form action="<?= base_url('auth'); ?>" method="POST" autocomplete="off" novalidate>
+                    <form action="<?= base_url('login'); ?>" method="POST" autocomplete="off" novalidate>
 
                         <?php if (form_error('username')) : ?>
                             <div class="mb-3">
