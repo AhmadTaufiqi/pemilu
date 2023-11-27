@@ -22,12 +22,13 @@ class Relawan extends CI_Controller
         $data['user_role'] = $this->session->userdata('role_id');
         $data['title'] = "Home";
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
+        $data['inputter'] = $this->db->get_where('user', ['role_id' => 2])->result_object();
+
         $data['qrelawan'] = $this->db->select('r.*,u.nama inputter')
             ->from('relawan r')
             ->join('user u', 'r.created_by=u.id', 'inner')
-            ->get()->result();
+            ->get()->result_object();
 
-        // echo json_encode($data['user_role']);
         $this->M_app->template($data, 'relawan/relawan');
     }
     public function addRelawan()
@@ -56,7 +57,7 @@ class Relawan extends CI_Controller
         }
 
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['action'] = "Tambah Relawan";
+        $data['action'] = "Tambah Data Relawan";
         $data['title'] = "Home";
 
         $this->M_app->template($data, 'relawan/form_relawan');
@@ -85,7 +86,8 @@ class Relawan extends CI_Controller
         }
 
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['action'] = "Edit Relawan";
+        $data['row_relawan'] = $this->db->get_where('relawan', ['id' => $this->input->get('id')])->row_array();
+        $data['action'] = "Edit Data Relawan";
         $data['title'] = "Home";
 
         $this->M_app->template($data, 'relawan/form_relawan');
@@ -94,6 +96,8 @@ class Relawan extends CI_Controller
     public function dashboard()
     {
         $data['title'] = 'dashboard';
+
+        // latest 5 day inputter
         $date = date('Y-m-d', strtotime($this->M_app->date() . "-5 day"));
         $label = [];
         $total = [];
@@ -110,11 +114,13 @@ class Relawan extends CI_Controller
         $data['label'] = $label;
         $data['total'] = $total;
 
+        // data top inputter terbanyak
         $data['data_tbl'] = $this->db->select('u.*,count(r.created_by) as total')
             ->from('user u')
             ->join('relawan r', 'r.created_by=u.id')
             ->where('u.role_id', '2')
             ->group_by('r.created_by')
+            ->order_by('total', 'ASC')
             ->get()->result_object();
 
         $this->M_app->template($data, 'dashboard');
@@ -141,21 +147,21 @@ class Relawan extends CI_Controller
 
         $numrow = 2;
         foreach ($data as $d) {
-            if($d->gender == 'L'){
+            if ($d->gender == 'L') {
                 $gender = 'Laki-Laki';
-            }else{
+            } else {
                 $gender = 'Perempuan';
             }
 
-            $prov = $this->db->get_where('provinces',['id'=>$d->provinsi])->row_array();
-            $kab = $this->db->get_where('regencies',['id'=>$d->kabupaten])->row_array();
+            $prov = $this->db->get_where('provinces', ['id' => $d->provinsi])->row_array();
+            $kab = $this->db->get_where('regencies', ['id' => $d->kabupaten])->row_array();
 
             $provinsi = '';
             $kabupaten = '';
-            if($prov){
+            if ($prov) {
                 $provinsi = $prov['name'];
             }
-            if($kab){
+            if ($kab) {
                 $kabupaten = $kab['name'];
             }
             $sheet->setCellValue('A' . $numrow, $d->nik);

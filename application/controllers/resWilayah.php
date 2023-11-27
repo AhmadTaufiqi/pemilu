@@ -23,8 +23,27 @@ class resWilayah extends CI_Controller
     }
     public function getKelurahan()
     {
-        $district_id = $this->input->post('cam_id');
-        $data = $this->db->get_where('villages', ['district_id' => $district_id])->result_object();
+        $kel_id = $this->input->post('kel_id');
+        $kab_id = [3271, 3203];
+        if ($kel_id) {
+            $this->db->where('v.id', $kel_id);
+        }
+        $data = $this->db->select('d.id as kecamatan_id,d.name as kecamatan,
+            p.id as provinsi_id,p.name as provinsi,
+            r.name as kabupaten,r.id as kabupaten_id,
+            v.name as kelurahan,v.id as kelurahan_id')
+            ->from('districts d')
+            ->join('regencies r', 'r.id=d.regency_id', 'inner')
+            ->join('provinces p', 'p.id=r.province_id', 'inner')
+            ->join('villages v', 'd.id=v.district_id', 'inner')
+            ->where_in('d.regency_id', $kab_id)
+            ->get()->result_object();
+        // $data = $this->db->select('v.*')
+        // ->from('villages v')
+        // ->join('districts d','d.id=v.district_id','inner')
+        // ->join('regencies r','r.id=d.regency_id','inner')
+        // ->where_in('district_id', $kab_id)
+        // ->get()->result_object();
         echo json_encode($data);
     }
 }

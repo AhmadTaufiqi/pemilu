@@ -93,6 +93,13 @@ class User extends CI_Controller
         $this->M_app->template($data, 'admin/form_user');
     }
 
+    public function delData(){
+        $id = $this->input->get('user_id');
+        $this->db->delete('user',['id'=>$id]);
+        $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
+        redirect('user');
+    }
+
     function CheckUsername()
     {
         $username = $this->input->post('username');

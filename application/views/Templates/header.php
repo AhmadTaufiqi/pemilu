@@ -12,10 +12,12 @@
     <link href="<?= base_url('assets/'); ?>dist/css/tabler-payments.min.css" rel="stylesheet" />
     <link href="<?= base_url('assets/'); ?>dist/css/tabler-vendors.min.css" rel="stylesheet" />
     <link href="<?= base_url('assets/'); ?>dist/css/dataTables.bootstrap4.css" rel="stylesheet" />
+    <link rel="stylesheet" href="<?= base_url() ?>assets/dist/css/tom-select.css">
     <link rel="stylesheet" href="<?= base_url() ?>assets/dist/css/feather.css">
 
     <link href="<?= base_url('assets/'); ?>dist/css/demo.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="<?= base_url('assets/'); ?>dist/css/style.css" rel="stylesheet" />
     <script src="<?= base_url() ?>assets/dist/js/jquery.min.js"></script>
 
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">

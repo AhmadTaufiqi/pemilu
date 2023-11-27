@@ -33,38 +33,42 @@
                                             <div class="col-sm-6 col-md-4">
                                                 <div class="mb-2">
                                                     <select type="text" class="form-select rounded-3" id="select_inputter" value="">
-                                                        <option value="1">Masukkan Inputter</option>
+                                                        <option value="">Masukkan Inputter</option>
+                                                        <?php foreach ($qrelawan as $u) : ?>
+                                                            <option value="<?= $u->id ?>"><?= $u->nama ?></option>
+                                                        <?php endforeach; ?>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="mb-2">
-                                                    <select type="text" class="form-select rounded-3" id="select_prov" name="filter_provinsi" value="">
-                                                        <option value="1">Pilih Provinsi</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="mb-2">
-                                                    <select type="text" class="form-select rounded-3" id="select_kab" name="filter_kabupaten" value="">
-                                                        <option value="1">Pilih Kabupaten</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="mb-2">
-                                                    <select type="text" class="form-select rounded-3" id="select_cam" name="filter_cam" value="">
-                                                        <option value="1">Pilih Kecamatan</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <div class="mb-2">
                                                     <select type="text" class="form-select rounded-3" id="select_kel" name="filter_kelurahan" value="">
                                                         <option value="1">Pilih Desa/Kelurahan</option>
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="mb-2">
+                                                    <select type="text" class="form-select rounded-3" id="select_cam" name="filter_cam" value="" disabled>
+                                                        <option value="1">Kecamatan</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="mb-2">
+                                                    <select type="text" class="form-select rounded-3" id="select_kab" name="filter_kabupaten" value="" disabled>
+                                                        <option value="1">Pilih Kabupaten</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-6 col-md-3">
+                                                <div class="mb-2">
+                                                    <select type="text" class="form-select rounded-3" id="select_prov" name="filter_provinsi" value="" disabled>
+                                                        <option value="1">Pilih Provinsi</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <button class="btn btn-primary rounded-3" type="submit">Cari</button>
                                     </form>
@@ -90,7 +94,7 @@
                                     <?php if ($user_role == 2) : ?>
                                         <a class="btn btn-primary rounded-3" href="<?= base_url('relawan/addRelawan'); ?>">Tambah Relawan</a>
                                     <?php endif; ?>
-                                    <a href="<?= base_url('Relawan/exportExcel')?>" class="btn btn-light btn-excel rounded-15">
+                                    <a href="<?= base_url('Relawan/exportExcel') ?>" class="btn btn-light btn-excel rounded-15">
                                         <i class="fas fa-file-excel" style="font-size:20px;color:#2e7943;"></i>
                                         <span class="text-success">&nbsp;&nbsp;Export Excel</span>
                                     </a>
@@ -142,81 +146,57 @@
             </div>
         </div>
     </div>
+
     <script>
         const base_url = '<?= base_url() ?>';
+
+        $(function() {
+            new TomSelect("#select_kel", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
+            new TomSelect("#select_inputter", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
+        })
+
         $.post({
-            url: base_url + 'resWilayah/getProv',
+            url: base_url + 'resWilayah/getKelurahan',
             method: "post",
             dataType: 'JSON',
             success: function(data) {
                 // data
-                console.log(data)
+                $('#select_kel').html('')
+                $('#select_kel').append('<option value="">Pilih Kelurahan</option>')
                 $.each(data, function(index, value) {
-                    $('#select_prov').append(new Option(value.name, value.id))
+                    $('#select_kel').append('<option value="' + value.kelurahan_id + '">' + value.kelurahan + '</option>')
                 });
             }
         })
 
-
-        $('#select_prov').on('change', function() {
-            var prov_id = $(this).val();
-            console.log(prov_id)
-            $.post({
-                url: base_url + 'resWilayah/getKab',
-                method: "post",
-                data: {
-                    prov_id
-                },
-                dataType: 'JSON',
-                success: function(data) {
-                    // data
-                    $('#select_kab').html('')
-                    $('#select_kab').append('<option value="">Pilih Kabupaten/Kota</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_kab').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
-                }
-            })
-        })
-
-        $('#select_kab').on('change', function() {
-            var kab_id = $(this).val();
-            console.log(kab_id)
-            $.post({
-                url: base_url + 'resWilayah/getCam',
-                method: "post",
-                data: {
-                    kab_id
-                },
-                dataType: 'JSON',
-                success: function(data) {
-                    // data
-                    $('#select_cam').html('')
-                    $('#select_cam').append('<option value="">Pilih Kecamatan</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_cam').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
-                }
-            })
-        })
-
-        $('#select_cam').on('change', function() {
-            var cam_id = $(this).val();
-            console.log(cam_id)
+        $('#select_kel').on('change', function() {
+            const kel_id = $(this).val()
             $.post({
                 url: base_url + 'resWilayah/getKelurahan',
                 method: "post",
                 data: {
-                    cam_id
+                    kel_id
                 },
                 dataType: 'JSON',
                 success: function(data) {
-                    // data
-                    $('#select_kel').html('')
-                    $('#select_kel').append('<option value="">Pilih Kecamatan</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_kel').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
+                    var value = data[0]
+                    $('#select_prov,#select_kab,#select_cam').html('')
+                    $('#select_prov').append('<option value="' + value.provinsi_id + '">' + value.provinsi + '</option>')
+                    $('#select_kab').append('<option value="' + value.kabupaten_id + '">' + value.kabupaten + '</option>')
+                    $('#select_cam').append('<option value="' + value.kecamatan_id + '">' + value.kecamatan + '</option>')
+
                 }
             })
         })

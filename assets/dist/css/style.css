@@ -19,7 +19,7 @@ input[type=number] {
 }
 
 .card {
-	border-radius: 1rem !important;
+	border-radius: .5rem !important;
 }
 
 .col-1,
@@ -516,48 +516,13 @@ input[type=number] {
 	margin: 0;
 }
 
-ul.pagination li a {
-	border-radius: 20px;
-	padding: 0.35rem 0.75rem;
-}
-
-ul.pagination .previous a {
-	border-radius: 20px;
-}
-
-.page-item.active .page-link {
-	background-color: #00000000;
-	color: #4e4e4e;
-	font-weight: 600;
-	font-size: 14px;
-	border: 0;
-}
 
 .pagination,
 .dataTables_length {
 	font-size: 0.77rem;
 }
-
-.page-item:first-child .page-link {
-	color: #404040;
-	background-color: white;
-	border-top-left-radius: 20px;
-	border-bottom-left-radius: 20px;
-}
-
-.page-link:hover {
-	border: none;
-}
-
-.page-item:last-child .page-link {
-	background-color: white;
-	color: #404040;
-	border-top-right-radius: 20px;
-	border-bottom-right-radius: 20px;
-}
-
-ul.pagination .disabled a {
-	background-color: #00000000 !important;
+.pagination{
+	padding:5px;
 }
 
 td .status-persetujuan {
@@ -734,10 +699,6 @@ table.dataTable thead>tr>td.sorting {
 	padding: 10px 1px;
 }
 
-.vertnav .nav-item.active {
-	background-color: #0067FF;
-	border-radius: 15px;
-}
 
 .vertnav .nav-item:hover {
 	background-color: #EFEFEF;
@@ -747,20 +708,14 @@ table.dataTable thead>tr>td.sorting {
 /* .nav-item a:hover,.nav-item a:hover {
 	color: #0067FF;
 } */
-.nav-item.active .nav-link span {
-	color: white !important;
-}
-.nav-item.active .nav-link img {
-	filter: invert(1);
-}
 
 .nav-link span {
-	color: #001a4e !important;
+	color: #51649d !important;
 }
 
 .nav-item:hover .nav-link i,
 .nav-item:hover .nav-link svg {
-	color: blue !important;
+	color: #24429e !important;
 }
 
 .nav-item:hover .nav-link span {
@@ -1153,10 +1108,6 @@ input[type="date"]+i {
 .icon i {
 	font-size: 13px;
 	color: #000;
-}
-
-.navbar {
-	padding: 0.5rem .8rem;
 }
 
 .custom_navtab {

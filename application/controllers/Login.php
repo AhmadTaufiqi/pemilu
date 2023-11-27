@@ -134,6 +134,7 @@ class Login extends CI_Controller
     {
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('role_id');
+        $this->session->unset_userdata('id_akun');
         $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">
         Berhasil Logout!</div>');
         redirect('login');

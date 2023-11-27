@@ -7,7 +7,7 @@
                 <div class="col">
                     <!-- Page pre-title -->
                     <h2 class="page-title">
-                        Tambah Data Relawan
+                        <?= $action ?>
                     </h2>
                 </div>
             </div>
@@ -46,7 +46,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">Jenis Kelamin</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="gender" required>
+                                                <select class="form-select rounded-3" name="gender" id="gender" required>
                                                     <option value="">Pilih Jenis Kelamin</option>
                                                     <option value="L">Laki-Laki</option>
                                                     <option value="P">Perempuan</option>
@@ -54,19 +54,10 @@
                                             </div>
                                         </div>
                                         <div class="mb-3 row">
-                                            <label class="col-3 col-form-label required">Provinsi</label>
+                                            <label class="col-3 col-form-label required">Desa/Kelurahan</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="provinsi" id="select_prov" required>
-                                                    <option value="">Pilih Provinsi</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3 row">
-                                            <label class="col-3 col-form-label required">Kabupaten/Kota</label>
-                                            <div class="col">
-                                                <select class="form-select rounded-3" name="kabupaten" id="select_kab" required>
-                                                    <option value="">Pilih Kabupaten/Kota</option>
+                                                <select class="form-select rounded-3" name="desa" id="select_kel" required>
+                                                    <option value="">Pilih Kelurahan</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -79,11 +70,20 @@
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="mb-3 row">
-                                            <label class="col-3 col-form-label required">Desa/Kelurahan</label>
+                                            <label class="col-3 col-form-label required">Kabupaten/Kota</label>
                                             <div class="col">
-                                                <select class="form-select rounded-3" name="desa" id="select_kel" required>
-                                                    <option value="">Pilih Kelurahan</option>
+                                                <select class="form-select rounded-3" name="kabupaten" id="select_kab" required>
+                                                    <option value="">Pilih Kabupaten/Kota</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 row">
+                                            <label class="col-3 col-form-label required">Provinsi</label>
+                                            <div class="col">
+                                                <select class="form-select rounded-3" name="provinsi" id="select_prov" required>
+                                                    <option value="">Pilih Provinsi</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -107,9 +107,9 @@
                                             </div>
                                         </div>
 
-                                        <a class="btn btn-secondary mt-3 float-end" href="<?= base_url('user/relawan'); ?>">Batal</a>
+                                        <a class="btn btn-secondary mt-3 float-end" href="<?= base_url('relawan'); ?>">Batal</a>
                                         <button class="btn btn-warning mt-3 me-3 float-end" type="reset">Reset</button>
-                                        <button class="btn btn-primary mt-3 me-3 float-end" type="submit">Tambah</button>
+                                        <button class="btn btn-primary mt-3 me-3 float-end" type="submit">Simpan</button>
 
                                     </div>
                                 </div>
@@ -120,82 +120,50 @@
             </div>
         </div>
     </div>
-
+    <?php if ($row_relawan) : ?>
+        <script>
+            const row_relawan = JSON.parse('<?= json_encode($row_relawan) ?>')
+            console.log(row_relawan)
+            $('#nik').val(row_relawan.nik)
+            $('#nama').val(row_relawan.nama)
+            $('#telepon').val(row_relawan.telepon)
+            $('#gender').val(row_relawan.gender)
+            $('#nik').val(row_relawan.nik)
+        </script>
+    <?php endif; ?>
     <script>
         const base_url = '<?= base_url() ?>';
+
         $.post({
-            url: base_url + 'resWilayah/getProv',
+            url: base_url + 'resWilayah/getKelurahan',
             method: "post",
             dataType: 'JSON',
             success: function(data) {
                 // data
-                console.log(data)
+                $('#select_kel').html('')
+                $('#select_kel').append('<option value="">Pilih Kelurahan</option>')
                 $.each(data, function(index, value) {
-                    $('#select_prov').append(new Option(value.name, value.id))
+                    $('#select_kel').append('<option value="' + value.kelurahan_id + '">' + value.kelurahan + '</option>')
                 });
             }
         })
 
-
-        $('#select_prov').on('change', function() {
-            var prov_id = $(this).val();
-            console.log(prov_id)
-            $.post({
-                url: base_url + 'resWilayah/getKab',
-                method: "post",
-                data: {
-                    prov_id
-                },
-                dataType: 'JSON',
-                success: function(data) {
-                    // data
-                    $('#select_kab').html('')
-                    $('#select_kab').append('<option value="">Pilih Kabupaten/Kota</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_kab').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
-                }
-            })
-        })
-
-        $('#select_kab').on('change', function() {
-            var kab_id = $(this).val();
-            console.log(kab_id)
-            $.post({
-                url: base_url + 'resWilayah/getCam',
-                method: "post",
-                data: {
-                    kab_id
-                },
-                dataType: 'JSON',
-                success: function(data) {
-                    // data
-                    $('#select_cam').html('')
-                    $('#select_cam').append('<option value="">Pilih Kecamatan</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_cam').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
-                }
-            })
-        })
-
-        $('#select_cam').on('change', function() {
-            var cam_id = $(this).val();
-            console.log(cam_id)
+        $('#select_kel').on('change', function() {
+            const kel_id = $(this).val()
             $.post({
                 url: base_url + 'resWilayah/getKelurahan',
                 method: "post",
                 data: {
-                    cam_id
+                    kel_id
                 },
                 dataType: 'JSON',
                 success: function(data) {
-                    // data
-                    $('#select_kel').html('')
-                    $('#select_kel').append('<option value="">Pilih Kecamatan</option>')
-                    $.each(data, function(index, value) {
-                        $('#select_kel').append('<option value="' + value.id + '">' + value.name + '</option>')
-                    });
+                    var value = data[0]
+                    $('#select_prov,#select_kab,#select_cam').html('')
+                    $('#select_prov').append('<option value="' + value.provinsi_id + '">' + value.provinsi + '</option>')
+                    $('#select_kab').append('<option value="' + value.kabupaten_id + '">' + value.kabupaten + '</option>')
+                    $('#select_cam').append('<option value="' + value.kecamatan_id + '">' + value.kecamatan + '</option>')
+
                 }
             })
         })

@@ -58,8 +58,8 @@
                                         <tr>
                                             <th><button class="table-sort" data-sort="sort-nama">Nama</button></th>
                                             <th width="20%"><button class="table-sort" data-sort="sort-username">Username</button></th>
-                                            <th width="20%">Password</th>
-                                            <th width="10%"></th>
+                                            <th width="20%" data-orderable="false">Password</th>
+                                            <th width="10%" data-orderable="false"></th>
 
                                         </tr>
                                     </thead>
@@ -69,8 +69,9 @@
                                                 <td class="sort-nama"><?= $u->nama ?></td>
                                                 <td class="sort-username"><?= $u->username ?></td>
                                                 <td>*****</td>
-                                                <td>
-                                                    <a href="<?= base_url('user/edituser?user_id=') . $u->id ?>" class="nav-link text-primary"><i class="fas fa-edit"></i>&nbsp;Edit</a>
+                                                <td class="text-center">
+                                                    <a href="<?= base_url('user/edituser?user_id=') . $u->id ?>" class="text-primary px-2 divider_right"><i class="fas fa-edit"></i></a>
+                                                    <a href="<?= base_url('user/deldata?id=') . $u->id ?>" class="text-danger px-2"><i class="fas fa-trash"></i></a>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
@@ -85,3 +86,6 @@
             </div>
         </div>
     </div>
+    <script>
+
+    </script>
