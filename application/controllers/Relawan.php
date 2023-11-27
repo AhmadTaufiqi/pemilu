@@ -106,7 +106,9 @@ class Relawan extends CI_Controller
                 'tps' => $input['tps'],
                 'updated_at' => $this->M_app->date(),
             );
-            $this->db->update('relawan', ['id' => $input['relawan_id']], $update_data);
+            $this->db->set($update_data);
+            $this->db->where('id' , $input['relawan_id']);
+            $this->db->update('relawan');
             $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
             redirect(base_url() . 'relawan');
         }

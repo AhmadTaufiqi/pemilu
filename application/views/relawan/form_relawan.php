@@ -25,7 +25,7 @@
                             <form action="" method="POST">
                                 <div class="row row-cards">
                                     <div class="col-md">
-                                        <input type="text" name="relawan_id" id="relawan_id">
+                                        <input type="hidden" name="relawan_id" id="relawan_id">
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label required">NIK</label>
                                             <div class="col">
@@ -123,7 +123,8 @@
     </div>
     <?php if ($row_relawan) : ?>
         <script>
-            $(function() {
+            setTimeout(function() {
+                //your code to be executed after 1 second
                 const row_relawan = JSON.parse('<?= json_encode($row_relawan) ?>')
                 console.log(row_relawan)
                 $('#relawan_id').val(row_relawan.id)
@@ -137,7 +138,9 @@
                 $('#tps').val(row_relawan.tps)
                 $('#select_kel').val(row_relawan.kelurahan)
                 setFormWil(row_relawan.kelurahan)
-            })
+
+                console.log($('#select_kel'))
+            }, 400);
         </script>
     <?php endif; ?>
     <script>
