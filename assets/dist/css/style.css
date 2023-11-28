@@ -1097,14 +1097,6 @@ input[type="date"]+i {
 
 }
 
-.icon {
-	position: absolute;
-	top: 6px;
-	left: 20px;
-	background-color: transparent;
-	border-radius: 50%;
-}
-
 .icon i {
 	font-size: 13px;
 	color: #000;

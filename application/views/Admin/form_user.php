@@ -42,8 +42,9 @@
                                         <div class="mb-3 row">
                                             <label class="col-3 col-form-label <?= $action == 'Edit' ? '' : 'required' ?>">Password</label>
                                             <div class="col">
-                                                <input type="password" name="password" id="password" class="form-control rounded-3" placeholder="Masukkan Password" pattern="(?=.*\d)(?=.*[a-z]).{5,}" title="Must contain at least one number and letter, and at least 8 or more characters" <?= $action == 'Edit' ? '' : 'required' ?>>
-                                                <small class="form-hint">Password harus berisi minimal 5 karakter</small>
+                                                <input type="password" name="password" id="password" class="form-control rounded-3" placeholder="Masukkan Password" pattern="(?=.*\d)(?=.*[a-z]).{5,}" title="Password harus berisi minimal 5 karakter huruf dan angka." <?= $action == 'Edit' ? '' : 'required' ?>>
+                                                <?= $action == 'Edit' ? '<small class="form-hint">Kosongkan jika tidak ingin merubah password.</small>' : '' ?>
+                                                <small class="form-hint text-danger">Password harus berisi minimal 5 karakter huruf dan angka.</small>
                                             </div>
                                         </div>
                                         <div class="mb-3 row">

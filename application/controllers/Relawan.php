@@ -234,7 +234,7 @@ class Relawan extends CI_Controller
     {
         // 3203 id kab cianjur
         // 3271 id kota bogor
-        // $data = $this->db->query("SELECT v.name as kelurahan,p.name as prov,r.name as kab,d.name as cam FROM provinces p 
+        // $data = $this->db->query("SELECT v.name as kelurahan,p.name as prov,r.name as kab,d.name as cam FROM provinces p
         // INNER JOIN regencies r ON p.id=r.province_id
         // INNER JOIN districts d ON r.id=d.regency_id
         // INNER JOIN villages v ON d.id=v.district_id
@@ -250,24 +250,18 @@ class Relawan extends CI_Controller
         //     echo '<br>';
         //     $this->db->where('username', $username);
         //     $data_check = $this->db->get('user')->result_array();
-        $data = array('username'=>'Tandem Bogor Utara-TS',
-        'username' => 'Tandem Bogor Utara-A',
-        'username'=>'Tandem Bogor Selatan-H',
-        'username'=>'Tandem Bogor Barat-AMS',
-        'username' =>'Tandem Tanah Sareal-BMP')
-            // echo count($data_check);
-            // if (count($data_check) == 0) {
-            //     $data_insert = [
-            //         'id' => $index,
-            //         'nama' => 'INPUTTER',
-            //         'username' => $username,
-            //         'password' => md5($password),
-            //         'role_id' => 2,
-            //         'created_at' => $this->M_app->date()
-            //     ];
-            //     $this->db->insert('user', $data_insert);
-            // }
-        }
+        // echo count($data_check);
+        // if (count($data_check) == 0) {
+        //     $data_insert = [
+        //         'id' => $index,
+        //         'nama' => 'INPUTTER',
+        //         'username' => $username,
+        //         'password' => md5($password),
+        //         'role_id' => 2,
+        //         'created_at' => $this->M_app->date()
+        //     ];
+        //     $this->db->insert('user', $data_insert);
+        // }
         echo count($data);
     }
 }
