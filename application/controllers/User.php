@@ -44,7 +44,7 @@ class User extends CI_Controller
                 'nama' => $input['nama'],
                 'username' => $input['username'],
                 'role_id' => 2,
-                'password' => $input['password'],
+                'password' => md5($input['password']),
                 'created_at' => $this->M_app->date()
             );
             $this->db->insert('user', $insert_data);
@@ -79,7 +79,7 @@ class User extends CI_Controller
                 $update_data['role_id'] = 2;
             }
             if (trim($input['password']) != '') {
-                $update_data['password'] = $input['password'];
+                $update_data['password'] = md5($input['password']);
             }
             $this->db->update('user', $update_data, ['id' => $user_id]);
             $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
