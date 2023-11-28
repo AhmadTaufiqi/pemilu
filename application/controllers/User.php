@@ -49,7 +49,7 @@ class User extends CI_Controller
             );
             $this->db->insert('user', $insert_data);
             $this->session->set_flashdata('message', '<h1 class="text-success">success</h1>');
-            echo json_encode($input);
+            redirect(base_url() . 'user');
         }
 
         $data['title'] = "Tambah User";

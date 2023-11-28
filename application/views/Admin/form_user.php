@@ -44,7 +44,7 @@
                                             <div class="col">
                                                 <input type="password" name="password" id="password" class="form-control rounded-3" placeholder="Masukkan Password" pattern="(?=.*\d)(?=.*[a-z]).{5,}" title="Password harus berisi minimal 5 karakter huruf dan angka." <?= $action == 'Edit' ? '' : 'required' ?>>
                                                 <?= $action == 'Edit' ? '<small class="form-hint">Kosongkan jika tidak ingin merubah password.</small>' : '' ?>
-                                                <small class="form-hint text-danger">Password harus berisi minimal 5 karakter huruf dan angka.</small>
+                                                <small class="form-hint">Password harus berisi minimal 5 karakter huruf dan angka.</small>
                                             </div>
                                         </div>
                                         <div class="mb-3 row">
@@ -54,9 +54,9 @@
                                             </div>
                                         </div>
 
-                                        <a class="btn btn-secondary mt-3 float-end" href="<?= base_url() ?>user">Batal</a>
-                                        <button class="btn btn-warning mt-3 me-3 float-end" type="reset">Reset</button>
-                                        <button class="btn btn-primary mt-3 me-3 float-end" type="submit">Simpan</button>
+                                        <a class="btn btn-secondary rounded-3 mt-3 float-end" href="<?= base_url() ?>user">Batal</a>
+                                        <button class="btn btn-warning rounded-3 mt-3 me-3 float-end" type="reset">Reset</button>
+                                        <button class="btn btn-primary rounded-3 mt-3 me-3 float-end" type="submit">Simpan</button>
 
                                     </div>
                                 </div>
