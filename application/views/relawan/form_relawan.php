@@ -126,7 +126,6 @@
             setTimeout(function() {
                 //your code to be executed after 1 second
                 const row_relawan = JSON.parse('<?= json_encode($row_relawan) ?>')
-                console.log(row_relawan)
                 $('#relawan_id').val(row_relawan.id)
                 $('#nik').val(row_relawan.nik)
                 $('#nama').val(row_relawan.nama)
@@ -138,14 +137,21 @@
                 $('#tps').val(row_relawan.tps)
                 $('#select_kel').val(row_relawan.kelurahan)
                 setFormWil(row_relawan.kelurahan)
-
-                console.log($('#select_kel'))
             }, 400);
         </script>
     <?php endif; ?>
     <script>
         const base_url = '<?= base_url() ?>';
 
+        $(function() {
+            new TomSelect("#select_kel", {
+                create: true,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
+        });
         $.post({
             url: base_url + 'resWilayah/getKelurahan',
             method: "post",
@@ -174,7 +180,6 @@
                 },
                 dataType: "JSON",
                 success: function(data) {
-                    console.log(data)
                     if (data > 0) {
                         $('#nik')[0].setCustomValidity("nik sudah tersedia!");
                     } else {

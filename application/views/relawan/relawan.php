@@ -2,7 +2,7 @@
 <div class="page-wrapper">
     <!-- Page body -->
     <div class="page-body">
-        <div class="container-xl">
+        <div class="mx-6">
             <div class="row">
                 <div class="col-md">
                     <div class="accordion" id="accordion-example">
@@ -56,7 +56,7 @@
                                             <div class="col-sm-6 col-md-3">
                                                 <div class="mb-2">
                                                     <select type="text" class="form-select rounded-3" id="select_kab" name="filter_kabupaten" value="" disabled>
-                                                        <option value="1">Pilih Kabupaten</option>
+                                                        <option value="1">Pilih Kabupaten/Kota</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -103,34 +103,48 @@
                                 <table id="datatable1" class="table table-striped mb-5">
                                     <thead>
                                         <tr>
-                                            <th><button class="table-sort" data-sort="sort-nik">NIK</button></th>
-                                            <th><button class="table-sort" data-sort="sort-city">Nama</button></th>
-                                            <th><button class="table-sort" data-sort="sort-gender">Gender</button></th>
-                                            <th><button class="table-sort" data-sort="sort-telp">Telepon</button></th>
-                                            <th><button class="table-sort" data-sort="sort-prov">Provinsi</button></th>
-                                            <th><button class="table-sort" data-sort="sort-kab">Kabupaten</button></th>
-                                            <th><button class="table-sort" data-sort="sort-tps">TPS</button></th>
-                                            <th><button class="table-sort" data-sort="sort-inputter">Inputter</button></th>
+                                            <th>NIK</th>
+                                            <th>Nama</th>
+                                            <th>Gender</th>
+                                            <th>Telepon</th>
+                                            <!--<th><button class="table-sort" data-sort="sort-prov">Provinsi</button></th>-->
+                                            <th>Kabupaten/Kota</th>
+                                            <th>Kecamatan</th>
+                                            <th>Kelurahan</th>
+                                            <th>RT</th>
+                                            <th>RW</th>
+                                            <th>TPS</th>
+                                            <th>Inputter</th>
                                             <?php if ($user_role == 2) : ?>
-                                                <th></th>
+                                                <th width="7%"></th>
+                                            <?php else: ?>
+                                                <th>Created At</th>
                                             <?php endif; ?>
                                         </tr>
                                     </thead>
                                     <tbody class="table-body">
                                         <?php foreach ($qrelawan as $r) : ?>
                                             <tr>
-                                                <td class="sort-nik"><?= $r->nik ?></td>
-                                                <td class="sort-name"><?= $r->nama ?></td>
-                                                <td class="sort-gender"><?= $r->gender == 'L' ? 'Laki - Laki' : 'Perempuan' ?></td>
-                                                <td class="sort-telp"><?= $r->telepon ?></td>
-                                                <td class="sort-prov"><?= $r->provinsi ?></td>
-                                                <td class="sort-kab"><?= $r->kabupaten ?></td>
-                                                <td class="sort-tps"><?= $r->tps ?></td>
-                                                <td class="sort-inputter"><?= $r->inputter ?></td>
+                                                <td><?= $r->nik ?></td>
+                                                <td><?= $r->nama ?></td>
+                                                <td><?= $r->gender == 'L' ? 'Laki - Laki' : 'Perempuan' ?></td>
+                                                <td><?= $r->telepon ?></td>
+                                                <!--<td class="sort-prov"><?= $r->provinsi ?></td>-->
+                                                <td><?= $r->kabupaten ?></td>
+                                                <td><?= $r->kecamatan ?></td>
+                                                <td><?= $r->kelurahan ?></td>
+                                                <td><?= $r->rt ?></td>
+                                                <td><?= $r->rw ?></td>
+                                                <td><?= $r->tps ?></td>
+                                                <td><?= $r->inputter ?></td>
                                                 <?php if ($user_role == 2) : ?>
                                                     <td class="text-end">
                                                         <a href="<?= base_url('relawan/editRelawan?id=') . $r->id ?>" class="px-2 divider_right"><i class="fas fa-edit"></i></a>
                                                         <a role="button" class="text-primary" data-bs-toggle="modal" data-bs-target="#detail_relawan" onclick="showDetailRelawan(<?= $r->id ?>)"><i class="fas fa-eye"></i></a>
+                                                    </td>
+                                                <?php else: ?>
+                                                    <td>
+                                                        <?= $r->created_at ?>
                                                     </td>
                                                 <?php endif; ?>
                                             </tr>
