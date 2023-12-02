@@ -22,7 +22,7 @@
                         <div class="card-status-top bg-primary"></div>
                         <div class="card-body">
                             <h3 class="card-title text-center"><b>Selamat Datang di Relawan Pemilu 2024</b></h3>
-                            <p class="text-secondary text-center">Kader Pejuang, Penggerak, dan Penggalang Pemilih (KP4) Partai Indonesia</p>
+                            <p class="text-secondary text-center">Kader Pejuang, Penggerak, dan Penggalang Pemilih (KP4) Partai Gerindra</p>
                         </div>
                     </div>
                 </div>

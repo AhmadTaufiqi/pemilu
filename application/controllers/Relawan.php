@@ -21,9 +21,9 @@ class Relawan extends CI_Controller
     public function index()
     {
         $data['user_role'] = $this->session->userdata('role_id');
-        $data['title'] = "Home";
+        $data['title'] = "Data Relawan";
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
-        $data['inputter'] = $this->db->get_where('user', ['role_id' => 2])->result_object();
+        $data['qinputter'] = $this->db->get_where('user', ['role_id' => 2])->result_object();
 
         $data['qrelawan'] = $this->M_relawan->getDataRelawan();
         $this->M_app->template($data, 'relawan/relawan');
@@ -56,7 +56,7 @@ class Relawan extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['row_relawan'] = [];
         $data['action'] = "Tambah Data Relawan";
-        $data['title'] = "Home";
+        $data['title'] = "Tambah Relawan";
 
         $this->M_app->template($data, 'relawan/form_relawan');
     }
@@ -96,7 +96,7 @@ class Relawan extends CI_Controller
         $data['user'] = $this->db->get_where('user', ['username' => $this->session->userdata('username')])->row_array();
         $data['row_relawan'] = $this->db->get_where('relawan', ['id' => $this->input->get('id')])->row_object();
         $data['action'] = "Edit Data Relawan";
-        $data['title'] = "Home";
+        $data['title'] = "Edit Relawan";
 
         $this->M_app->template($data, 'relawan/form_relawan');
     }
@@ -107,10 +107,10 @@ class Relawan extends CI_Controller
         $data = $this->db->select('r.*,u.nama as inputter,p.name as provinsi, k.name as kabupaten, d.name as kecamatan, v.name as kelurahan')
             ->from('relawan r')
             ->join('user u', 'r.created_by=u.id', 'inner')
-            ->join('provinces p', 'r.provinsi=p.id', 'inner')
-            ->join('regencies k', 'r.kabupaten=k.id', 'inner')
-            ->join('districts d', 'r.kecamatan=d.id', 'inner')
-            ->join('villages v', 'r.kelurahan=v.id', 'inner')
+            ->join('provinces p', 'r.provinsi=p.id', 'left')
+            ->join('regencies k', 'r.kabupaten=k.id', 'left')
+            ->join('districts d', 'r.kecamatan=d.id', 'left')
+            ->join('villages v', 'r.kelurahan=v.id', 'left')
             ->where('r.id', $id)
             ->get()->row_object();
         echo json_encode($data);
@@ -125,7 +125,7 @@ class Relawan extends CI_Controller
 
     public function dashboard()
     {
-        $data['title'] = 'dashboard';
+        $data['title'] = 'Dashboard';
 
         // latest 5 day inputter
         $date = date('Y-m-d', strtotime($this->M_app->date() . "-5 day"));

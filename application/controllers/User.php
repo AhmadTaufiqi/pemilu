@@ -8,7 +8,7 @@ class User extends CI_Controller
         parent::__construct();
         $this->load->model('M_app');
         if (empty($this->session->userdata('id_akun'))) {
-            redirect(base_url('auth'));
+            redirect(base_url('login'));
         }
     }
 
@@ -24,7 +24,7 @@ class User extends CI_Controller
         $data['user'] = $this->db->select('*')->from('user')
             ->get()->result_object();
 
-        $data['title'] = "Home";
+        $data['title'] = "Data Inputter";
         if ($user_role == 1) {
             $this->M_app->template($data, 'admin/list_users');
         } else {

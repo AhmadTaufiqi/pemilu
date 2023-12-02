@@ -33,8 +33,8 @@
                                                 <div class="mb-2">
                                                     <select type="text" class="form-select rounded-3" id="select_inputter" name="filter_inputter" value="">
                                                         <option value="">Masukkan Inputter</option>
-                                                        <?php foreach ($qrelawan as $u) : ?>
-                                                            <option value="<?= $u->id ?>"><?= $u->nama ?></option>
+                                                        <?php foreach ($qinputter as $i) : ?>
+                                                            <option value="<?= $i->id ?>"><?= $i->username ?></option>
                                                         <?php endforeach; ?>
                                                     </select>
                                                 </div>

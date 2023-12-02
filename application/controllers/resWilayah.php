@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class resWilayah extends CI_Controller
+class ResWilayah extends CI_Controller
 {
 
     public function getProv()
